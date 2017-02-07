@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simple Canvas House</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="../simple_canvas.js"></script> 
+	<script>
+		'use strict';
+		
+		if (House === undefined) {
+			var House = {};
+		}
+		
+		/**
+		 * run the main script to draw the house
+		 */
+		House.run = function() {
+			House.canvas = document.getElementById('canvas');
+
+			// sanity check
+			if (House.canvas === null) {
+				console.log('canvas does not exist');
+				return;
+			}
+			
+			var sideLength = House.screenSquareLength();
+			
+			// if width is less than height
+			if (window.innerWidth === sideLength){
+				var excess = window.innerHeight - sideLength;
+			} else {
+				var excess = window.innerWidth - sideLength;
+			}
+			
+			House.canvas.setAttribute('width', sideLength);
+			House.canvas.setAttribute('height', sideLength);
+
+			var body = document.getElementsByTagName('body')[0];
+			body.style.marginLeft = excess / 2 + 'px';
+			
+			House.animate(sideLength);
+		}
+		
+		/**
+		 * get the lesser of width and height
+		 * @return integer side length
+		 */
+		House.screenSquareLength = function() {
+			if (window.innerWidth < window.innerHeight) {
+				return window.innerWidth;
+			}
+			return window.innerHeight;
+		}
+		
+		/**
+		 * render the house
+		 * @param sideLength length of the canvas
+		 */
+		House.render = function(sideLength) {
+			if (sideLength === undefined || typeof sideLength !== 'number') {
+				console.log('render: sanity check failed');
+				return;
+			}
+			
+			// sanity check
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+			
+			SimpleCanvas.clear('canvas');
+			SimpleCanvas.drawWall('canvas', sideLength / 6, sideLength / 4, 2 * sideLength / 3, sideLength / 2, 'white', 'black');
+			SimpleCanvas.drawSmoke('canvas', sideLength / 3 + sideLength / 48, sideLength / 12, 10, 2, 15, 'left', 0, 0.5);
+			SimpleCanvas.drawChimney('canvas', sideLength / 3, sideLength / 12, sideLength / 24, sideLength / 12, 'red', 'grey');
+			SimpleCanvas.drawRoof('canvas', sideLength / 12, sideLength / 6, 5 * sideLength / 6, sideLength / 6, 'brown', 'black');
+			SimpleCanvas.drawWindow('canvas', sideLength / 4, sideLength / 2, sideLength / 12, sideLength / 12, 'black', 'brown');
+			SimpleCanvas.drawWindow('canvas', 2 * sideLength / 3, sideLength / 2, sideLength / 12, sideLength / 12, 'black', 'brown');
+			SimpleCanvas.drawDoor('canvas', 11 * sideLength / 24, 7 * sideLength / 12, 2 * sideLength / 24, 2 * sideLength / 12, 'grey', 'brown', 'gold');
+		}
+		
+		/**
+		 * anime the house
+		 * @param sideLength length of the canvas
+		 */
+		House.animate = function(sideLength) {
+			if (sideLength === undefined || typeof sideLength !== 'number') {
+				console.log('animate: sanity check failed');
+				return;
+			}
+			var timer = setInterval('House.render(' + sideLength + ')', 100);
+		}
+		
+	</script>
+</head>
+<body onload='House.run();'>
+	<canvas id='canvas'></canvas>
+</body>
+</html>
